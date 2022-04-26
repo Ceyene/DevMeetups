@@ -1,3 +1,6 @@
+//dependencies
+import { MongoClient } from 'mongodb';
+//components
 import MeetupDetail from '../../components/meetups/MeetupDetail';
 
 function MeetupDetails() {
@@ -12,24 +15,32 @@ function MeetupDetails() {
 }
 
 //preparing paths and working with fallback pages (404 page)
-export function getStaticPaths() {
+export async function getStaticPaths() {
+	//USING MONGODB
+	//creating mongo client
+	const client = await MongoClient.connect(
+		`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.eusm6.mongodb.net/meetups?retryWrites=true&w=majority`
+	);
+	//accessing db and collection
+	const db = client.db();
+	const meetupsCollection = db.collection('meetups');
+	//making query only for meetups id and converting them to an array
+	const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+	//closing db connection
+	client.close();
+
 	return {
 		fallback: false, //404 when not finding, if true, Next.js will generate dinamically new pages if not finding params value in paths object
-		paths: {
-			params: {
-				meetupId: 'm1',
-			},
-			params: {
-				meetupId: 'm2',
-			},
-		},
+		paths: meetups.map((meetup) => ({
+			params: { meetupId: meetup._id.toString() },
+		})),
 	};
 }
 
 //fetching data in static pages --> code executed on the building process -> never reach users browser or servers
 export async function getStaticProps(context) {
 	const meetupId = context.params; //taking the id from url params
-	// fetch data from an API
+
 	return {
 		props: {
 			image:

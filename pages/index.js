@@ -26,7 +26,7 @@ export async function getStaticProps() {
 	//USING MONGODB
 	//creating mongo client
 	const client = await MongoClient.connect(
-		'mongodb+srv://cynthia:DDnXCNLURPtWBGtV@cluster0.eusm6.mongodb.net/meetups?retryWrites=true&w=majority'
+		`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.eusm6.mongodb.net/meetups?retryWrites=true&w=majority`
 	);
 	//accessing db and collection
 	const db = client.db();
