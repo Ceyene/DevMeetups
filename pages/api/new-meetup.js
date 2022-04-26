@@ -10,8 +10,10 @@ async function handler(req, res) {
 			const data = req.body;
 			const { title, image, address, description } = data; //getting info to be sent to my db
 
-			//using mongodb
-			await MongoClient.connect(
+			//USING MONGODB
+
+			//creating mongo client
+			const client = await MongoClient.connect(
 				'mongodb+srv://cynthia:DDnXCNLURPtWBGtV@cluster0.eusm6.mongodb.net/meetups?retryWrites=true&w=majority'
 			);
 			//creating db and collection
