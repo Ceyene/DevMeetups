@@ -1,10 +1,23 @@
 //dependencies
 import { MongoClient } from 'mongodb';
+import { Fragment } from 'react';
 //components
+import Head from 'next/head'; //--> allows to add elements to the head sention of html page
 import MeetupList from '../components/meetups/MeetupList';
 
 function HomePage(props) {
-	return <MeetupList meetups={props.meetups} />;
+	return (
+		<Fragment>
+			<Head>
+				<title>Dev Meetups by Cyn Romero</title>
+				<meta
+					name="description"
+					content="Browse a huge list of highly active Dev meetups. Small project in React, NextJS and MongoDB by Cynthia Romero"
+				/>
+			</Head>
+			<MeetupList meetups={props.meetups} />
+		</Fragment>
+	);
 }
 
 //server side rendering --> fetching data

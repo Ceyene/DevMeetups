@@ -1,5 +1,7 @@
 //dependencies
 import { useRouter } from 'next/router';
+import { Fragment } from 'react';
+import Head from 'next/head'; //--> allows to add elements to the head sention of html page
 // our-domain.com/new-meetup
 import NewMeetupForm from '../../components/meetups/NewMeetupForm';
 
@@ -21,7 +23,18 @@ function NewMeetupPage() {
 		router.push('/');
 	}
 
-	return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
+	return (
+		<Fragment>
+			<Head>
+				<title>Add a New Meetup</title>
+				<meta
+					name="description"
+					content="Add a new Dev meetup. Small project in React, NextJS and MongoDB by Cynthia Romero"
+				/>
+			</Head>
+			<NewMeetupForm onAddMeetup={addMeetupHandler} />
+		</Fragment>
+	);
 }
 
 export default NewMeetupPage;
