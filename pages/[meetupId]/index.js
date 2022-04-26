@@ -38,7 +38,7 @@ export async function getStaticPaths() {
 	client.close();
 
 	return {
-		fallback: false, //404 when not finding, if true, Next.js will generate dinamically new pages if not finding params value in paths object
+		fallback: 'blocking', //blocking: list might grow in the future, false: 404 when not finding, true: Next.js will generate dinamically new pages if not finding params value in paths object
 		paths: meetups.map((meetup) => ({
 			params: { meetupId: meetup._id.toString() },
 		})),
