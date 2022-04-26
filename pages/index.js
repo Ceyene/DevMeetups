@@ -1,26 +1,10 @@
+//dependencies
+import { MongoClient } from 'mongodb';
+//components
 import MeetupList from '../components/meetups/MeetupList';
 
-const DUMMY_MEETUPS = [
-	{
-		id: 'm1',
-		title: 'A First Meetup',
-		image:
-			'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-		address: 'Some address 5, 12345 Some City',
-		description: 'This is a first meetup!',
-	},
-	{
-		id: 'm2',
-		title: 'A Second Meetup',
-		image:
-			'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-		address: 'Some address 10, 12345 Some City',
-		description: 'This is a second meetup!',
-	},
-];
-
-function HomePage() {
-	return <MeetupList meetups={DUMMY_MEETUPS} />;
+function HomePage(props) {
+	return <MeetupList meetups={props.meetups} />;
 }
 
 //server side rendering --> fetching data
@@ -39,10 +23,28 @@ function HomePage() {
 
 //fetching data in static pages --> code executed on the building process -> never reach users browser or servers
 export async function getStaticProps() {
-	// fetch data from an API
+	//USING MONGODB
+	//creating mongo client
+	const client = await MongoClient.connect(
+		'mongodb+srv://cynthia:DDnXCNLURPtWBGtV@cluster0.eusm6.mongodb.net/meetups?retryWrites=true&w=majority'
+	);
+	//accessing db and collection
+	const db = client.db();
+	const meetupsCollection = db.collection('meetups');
+	//making query for all meetups and converting them to an array
+	const meetups = await meetupsCollection.find().toArray();
+	//closing db connection
+	client.close();
+
 	return {
 		props: {
-			meetups: DUMMY_MEETUPS,
+			meetups: meetups.map((meetup) => ({
+				title: meetup.title,
+				address: meetup.address,
+				image: meetup.image,
+				description: meetup.description,
+				id: meetup._id.toString(),
+			})),
 		},
 		revalidate: 1, //re pre-generating on the server after deployment
 	};
